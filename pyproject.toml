@@ -1,0 +1,47 @@
+[build-system]
+requires = ["setuptools>=41", "wheel", "setuptools-git-versioning"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name="precice-cli"
+dynamic = [ "version" ]
+dependencies = [
+    "precice-config-visualizer @ file:///home/simonifc/Documents/precice/config-visualizer",
+    "precice-config-format @ file:///home/simonifc/Documents/precice/config-format",
+    "precice-profiling @ file:///home/simonifc/Documents/precice/profiling",
+]
+requires-python = ">=3.8"
+authors = [
+    { name = "The preCICE Developers",  email="info@precice.org"}
+]
+maintainers = [
+    { name = "Frédéric Simonis",  email="frederic.simonis@ipvs.uni-stuttgart.de"}
+]
+description="A unified command line interface for preCICE tools."
+readme = "README.md"
+license= "MIT"
+license-files = [ "LICENSE" ]
+keywords = [ "preCICE", "XML",  "configuration", "format", "visualization" ]
+classifiers=[
+"Development Status :: 4 - Beta",
+"Programming Language :: Python :: 3 :: Only",
+"Programming Language :: Python :: 3.8",
+"Topic :: Utilities",
+]
+
+[project.urls]
+Homepage = "https://precice.org"
+Repository = "https://github.com/precice/config-format.git"
+"Bug Tracker" = "https://github.com/precice/config-format/issues"
+
+[project.scripts]
+precice-config-format = "precicecli.cli:main"
+
+[tool.setuptools]
+packages=["precicecli"]
+
+[tool.setuptools-git-versioning]
+enabled = true
+
+[tool.mypy]
+disable_error_code = "import-untyped"
