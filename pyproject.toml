@@ -6,8 +6,8 @@ build-backend = "setuptools.build_meta"
 name="precice-cli"
 dynamic = [ "version" ]
 dependencies = [
-    "precice-config-visualizer @ file:///home/simonifc/Documents/precice/config-visualizer",
-    "precice-config-format @ file:///home/simonifc/Documents/precice/config-format",
+    "precice-config-visualizer >= 1.1.8",
+    "precice-config-format >= 1.2.0",
     "precice-profiling @ file:///home/simonifc/Documents/precice/profiling",
 ]
 requires-python = ">=3.8"
@@ -35,7 +35,7 @@ Repository = "https://github.com/precice/config-format.git"
 "Bug Tracker" = "https://github.com/precice/config-format/issues"
 
 [project.scripts]
-precice-config-format = "precicecli.cli:main"
+precice-cli = "precicecli.cli:main"
 
 [tool.setuptools]
 packages=["precicecli"]

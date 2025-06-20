@@ -26,8 +26,8 @@ precice-cli config visualize precice-config.xml -o graph.pdf
 ```
 
 ```console
-precice-cli config validate precice-config.xml
-precice-cli config validate precice-config.xml SolverOne
+precice-cli config check precice-config.xml
+precice-cli config check precice-config.xml SolverOne
 ```
 
 ### Profiling
