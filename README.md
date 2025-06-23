@@ -1,42 +1,53 @@
-# preCICE Config-Format
+# preCICE CLI
 
-`config-format` is a tool meant to format preCICE configurations consistently. A uniform order simplifies cooperation debugging.
+The `precice-cli` is a uniform and simple access to all command line tools of preCICE.
+Some commands use tools provided by the preCICE library and require it to be installed.
+The installed executables must be in PATH.
 
 ## Installation options
 
 Install directly from PyPi using [pipx](https://pipx.pypa.io/stable/) or via pip:
 
 ```console
-pipx install precice-config-format
+pipx install precice-cli
 ```
 
-## Usage
+## Usage examples
 
-To format one or more preCICE configuration files in-place:
+
+### Configuration
 
 ```console
-precice-config-format FILE ...
+precice-cli config format precice-config.xml
 ```
 
-The script returns with exit code 0 on success, 1 on error, and 2 if a file was modified.
-
-## pre-commit hook
-
-To use this script as a pre-commit hook select [a tag](https://github.com/precice/config-format/tags) and add:
-
-```yaml
--   repo: https://github.com/precice/config-format
-    rev: ''  # Use the tag you want to use
-    hooks:
-    -   id: precice-config-format
+```console
+precice-cli config visualize precice-config.xml -o graph.pdf
 ```
 
-To exclude directories, use `exclude:`
+```console
+precice-cli config validate precice-config.xml
+precice-cli config validate precice-config.xml SolverOne
+```
 
-```yaml
--   repo: https://github.com/precice/config-format
-    rev: ''  # Use the tag you want to use
-    hooks:
-    -   id: precice-config-format
-        exclude: '^thridparty' # optionally exclude directories here
+### Profiling
+
+Pre-processing:
+
+```console
+precice-cli profiling merge
+```
+
+Post-processing:
+
+```console
+precice-cli profiling export
+precice-cli profiling trace
+precice-cli profiling analyze SolverOne
+```
+
+### Version display
+
+```console
+precice-cli version
 ```
