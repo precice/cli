@@ -9,6 +9,7 @@ dependencies = [
     "precice-config-visualizer >= 1.1.8",
     "precice-config-format >= 1.2.0",
     "precice-profiling @ git+https://github.com/precice/profiling.git",
+    "precice-config-check @ git+https://github.com/precice/config-check.git",
 ]
 requires-python = ">=3.8"
 authors = [
