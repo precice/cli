@@ -22,24 +22,22 @@ def add_subparser(subparser, name, parserFactory):
     )
 
 def runProfiling(ns):
-    dispatcher = {
+    return {
             "analyze": runAnalyze,
             "trace": runTrace,
             "export": runExport,
             "histogram": runHistogram,
             "merge": runMerge
             }[ns.subcmd](ns)
-    return 0
 
 
 def runConfig(ns):
-    dispatcher = {
+     return {
             "visualize": runVisualize,
             "format": runFormat,
             "doc": runDoc,
             "check": runCheck,
             }[ns.subcmd](ns)
-    return 0
 
 def main():
     parser = argparse.ArgumentParser(description="Unified preCICE commandline tools")
