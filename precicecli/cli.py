@@ -11,6 +11,8 @@ from preciceprofiling.trace import runTrace, makeTraceParser
 
 from precicecli.native import runCheck, runDoc, runVersion, makeDocParser ,makeCheckParser
 
+from precicecasegenerate.cli import runGenerate, makeGenerateParser
+
 
 def add_subparser(subparser, name, parserFactory):
     parser = parserFactory(False)
@@ -50,6 +52,7 @@ def main():
     version_help = "Show version of preCICE"
     subparsers.add_parser("version", help=version_help, description=version_help)
 
+    add_subparser(subparsers, "init", makeGenerateParser)
 
     profiling_help = "Tools for processing preCICE profiling files"
     profiling_root = subparsers.add_parser("profiling", help=profiling_help, description=profiling_help)
@@ -96,4 +99,5 @@ def main():
             "version": runVersion,
             "profiling": runProfiling,
             "config": runConfig,
+            "init": runGenerate,
             }[ns.cmd](ns)

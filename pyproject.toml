@@ -10,6 +10,7 @@ dependencies = [
     "precice-config-format >= 1.2.0",
     "precice-profiling @ git+https://github.com/precice/profiling.git",
     "precice-config-check @ git+https://github.com/precice/config-check.git",
+    "precice-case-generate @ git+https://github.com/precice/case-generate.git",
 ]
 requires-python = ">=3.8"
 authors = [
