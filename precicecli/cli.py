@@ -9,7 +9,13 @@ from preciceprofiling.export import runExport, makeExportParser
 from preciceprofiling.histogram import runHistogram, makeHistogramParser
 from preciceprofiling.trace import runTrace, makeTraceParser
 
-from precicecli.native import runCheck, runDoc, runVersion, makeDocParser ,makeCheckParser
+from precicecli.native import (
+    runCheck,
+    runDoc,
+    runVersion,
+    makeDocParser,
+    makeCheckParser,
+)
 
 from precicecasegenerate.cli import runGenerate, makeGenerateParser
 
@@ -23,23 +29,25 @@ def add_subparser(subparser, name, parserFactory):
         parents=[parser],
     )
 
+
 def runProfiling(ns):
     return {
-            "analyze": runAnalyze,
-            "trace": runTrace,
-            "export": runExport,
-            "histogram": runHistogram,
-            "merge": runMerge
-            }[ns.subcmd](ns)
+        "analyze": runAnalyze,
+        "trace": runTrace,
+        "export": runExport,
+        "histogram": runHistogram,
+        "merge": runMerge,
+    }[ns.subcmd](ns)
 
 
 def runConfig(ns):
-     return {
-            "visualize": runVisualize,
-            "format": runFormat,
-            "doc": runDoc,
-            "check": runCheck,
-            }[ns.subcmd](ns)
+    return {
+        "visualize": runVisualize,
+        "format": runFormat,
+        "doc": runDoc,
+        "check": runCheck,
+    }[ns.subcmd](ns)
+
 
 def main():
     parser = argparse.ArgumentParser(description="Unified preCICE commandline tools")
@@ -48,14 +56,15 @@ def main():
         dest="cmd",
     )
 
-
     version_help = "Show version of preCICE"
     subparsers.add_parser("version", help=version_help, description=version_help)
 
     add_subparser(subparsers, "init", makeGenerateParser)
 
     profiling_help = "Tools for processing preCICE profiling files"
-    profiling_root = subparsers.add_parser("profiling", help=profiling_help, description=profiling_help)
+    profiling_root = subparsers.add_parser(
+        "profiling", help=profiling_help, description=profiling_help
+    )
     profiling = profiling_root.add_subparsers(
         title="profiling commands",
         dest="subcmd",
@@ -67,9 +76,10 @@ def main():
     add_subparser(profiling, "histogram", makeHistogramParser)
     add_subparser(profiling, "merge", makeHistogramParser)
 
-
     config_help = "Tools for processing preCICE configuration files"
-    config_root = subparsers.add_parser("config", help=config_help, description=config_help)
+    config_root = subparsers.add_parser(
+        "config", help=config_help, description=config_help
+    )
     config = config_root.add_subparsers(
         title="configuration commands",
         dest="subcmd",
@@ -79,7 +89,6 @@ def main():
     add_subparser(config, "visualize", makeVisualizeParser)
     add_subparser(config, "check", makeCheckParser)
     add_subparser(config, "doc", makeDocParser)
-
 
     ns = parser.parse_args()
 
@@ -96,8 +105,8 @@ def main():
         return printParserHelp(config_root)
 
     return {
-            "version": runVersion,
-            "profiling": runProfiling,
-            "config": runConfig,
-            "init": runGenerate,
-            }[ns.cmd](ns)
+        "version": runVersion,
+        "profiling": runProfiling,
+        "config": runConfig,
+        "init": runGenerate,
+    }[ns.cmd](ns)
