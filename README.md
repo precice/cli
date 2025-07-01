@@ -51,3 +51,9 @@ precice-cli profiling analyze SolverOne
 ```console
 precice-cli version
 ```
+
+### Case generation
+
+```console
+precice-cli init
+```
