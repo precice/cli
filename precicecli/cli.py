@@ -49,7 +49,7 @@ def runConfig(ns):
     }[ns.subcmd](ns)
 
 
-def main():
+def makeParser():
     parser = argparse.ArgumentParser(description="Unified preCICE commandline tools")
     subparsers = parser.add_subparsers(
         title="commands",
@@ -89,9 +89,10 @@ def main():
     add_subparser(config, "visualize", makeVisualizeParser)
     add_subparser(config, "check", makeCheckParser)
     add_subparser(config, "doc", makeDocParser)
+    return parser
 
-    ns = parser.parse_args()
 
+def run(ns):
     def printParserHelp(p):
         p.print_help()
         return 1
@@ -110,3 +111,8 @@ def main():
         "config": runConfig,
         "init": runGenerate,
     }[ns.cmd](ns)
+
+
+def main():
+    ns = makeParser.parse_args()
+    return run(ns)
