@@ -89,22 +89,24 @@ def makeParser():
     add_subparser(config, "visualize", makeVisualizeParser)
     add_subparser(config, "check", makeCheckParser)
     add_subparser(config, "doc", makeDocParser)
-    return parser
+
+    def checker(args):
+        def printParserHelp(p):
+            p.print_help()
+            return 1
+
+        if args.cmd is None:
+            return printParserHelp(parser)
+        if args.cmd == "profiling" and args.subcmd is None:
+            return printParserHelp(profiling_root)
+        if args.cmd == "config" and args.subcmd is None:
+            return printParserHelp(config_root)
+        return 0
+
+    return parser, checker
 
 
 def run(ns):
-    def printParserHelp(p):
-        p.print_help()
-        return 1
-
-    # Handle missing commands and subcommands
-    if ns.cmd is None:
-        return printParserHelp(parser)
-    if ns.cmd == "profiling" and ns.subcmd is None:
-        return printParserHelp(profiling_root)
-    if ns.cmd == "config" and ns.subcmd is None:
-        return printParserHelp(config_root)
-
     return {
         "version": runVersion,
         "profiling": runProfiling,
@@ -114,5 +116,8 @@ def run(ns):
 
 
 def main():
-    ns = makeParser.parse_args()
+    parser, checker = makeParser()
+    ns = parser.parse_args()
+    if rc := checker(ns):
+        return rc
     return run(ns)
