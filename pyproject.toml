@@ -6,11 +6,11 @@ build-backend = "setuptools.build_meta"
 name="precice-cli"
 dynamic = [ "version" ]
 dependencies = [
-    "precice-config-visualizer >= 1.1.8",
-    "precice-config-format >= 1.2.0",
-    "precice-profiling @ git+https://github.com/precice/profiling.git",
-    "precice-config-check @ git+https://github.com/precice/config-check.git",
-    "precice-case-generate @ git+https://github.com/precice/case-generate.git",
+    "precice-config-visualizer >= 2",
+    "precice-config-format >= 2",
+    "precice-profiling",
+    "precice-config-check",
+    "precice-case-generate",
 ]
 requires-python = ">=3.8"
 authors = [
