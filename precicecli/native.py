@@ -2,6 +2,8 @@ import argparse
 import subprocess
 import pathlib
 import sys
+import re
+from importlib.metadata import version, requires
 
 import preciceconfigcheck.cli
 
@@ -31,19 +33,28 @@ def makeDocParser(_):
     return parser
 
 
-def runVersion(_):
+def getLibraryVersion():
     try:
-        ret = subprocess.run("precice-version")
-        return ret.returncode
+        ret = subprocess.run("precice-version", subprocess.PIPE)
+        return ret.stdout
     except subprocess.CalledProcessError as e:
-        return 1
+        return str(e)
     except FileNotFoundError:
-        print(
-            "precice-version wasn't found. Please install preCICE and add it to your PATH.",
-            file=sys.stderr,
-            flush=True,
-        )
-        return 1
+        return "precice-version wasn't found. Please install preCICE and add it to your PATH."
+
+
+def runVersion(_):
+    packages = ["precice-cli"] + [
+        re.split(r"[\[<=>~]", p)[0].strip() for p in requires("precice-cli")
+    ]
+
+    len = max(map(str.__len__, packages))
+    fmt = "{:" + str(len) + "}: {}"
+
+    print(fmt.format("libprecice", getLibraryVersion()))
+    for package in packages:
+        print(fmt.format(package, version(package)))
+    return 0
 
 
 def runDoc(ns):
