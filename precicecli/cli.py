@@ -8,6 +8,7 @@ from preciceprofiling.analyze import runAnalyze, makeAnalyzeParser
 from preciceprofiling.export import runExport, makeExportParser
 from preciceprofiling.histogram import runHistogram, makeHistogramParser
 from preciceprofiling.trace import runTrace, makeTraceParser
+from preciceprofiling.merge import runMerge, makeMergeParser
 
 from precicecli.native import (
     runCheck,
@@ -74,7 +75,7 @@ def makeParser():
     add_subparser(profiling, "trace", makeTraceParser)
     add_subparser(profiling, "export", makeExportParser)
     add_subparser(profiling, "histogram", makeHistogramParser)
-    add_subparser(profiling, "merge", makeHistogramParser)
+    add_subparser(profiling, "merge", makeMergeParser)
 
     config_help = "Tools for processing preCICE configuration files"
     config_root = subparsers.add_parser(
