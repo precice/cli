@@ -37,10 +37,14 @@ def getLibraryVersion():
     try:
         ret = subprocess.run("precice-version", subprocess.PIPE)
         return ret.stdout
-    except subprocess.CalledProcessError as e:
-        return str(e)
-    except FileNotFoundError:
-        return "precice-version wasn't found. Please install preCICE and add it to your PATH."
+    except:
+        try:
+            ret = subprocess.run(["precice-tools", "version"], subprocess.PIPE)
+            return ret.stdout
+        except subprocess.CalledProcessError as e:
+            return str(e)
+        except FileNotFoundError:
+            return "precice-version and precice-tools weren't found. Please install preCICE and add it to your PATH."
 
 
 def runVersion(_):
@@ -64,13 +68,18 @@ def runDoc(ns):
     except subprocess.CalledProcessError as e:
         return 1
     except FileNotFoundError:
-        print(
-            "precice-config-doc wasn't found. Please install preCICE and add it to your PATH.",
-            file=sys.stderr,
-            flush=True,
-        )
-        return 1
-    return 0
+        try:
+            ret = subprocess.run(["precice-tools", ns.format])
+        except subprocess.CalledProcessError as e:
+            return 1
+        except FileNotFoundError:
+            print(
+                "precice-config-doc and precice-tools weren't found. Please install preCICE and add it to your PATH.",
+                file=sys.stderr,
+                flush=True,
+            )
+            return 1
+        return 0
 
 
 def runCheck(ns):
@@ -80,25 +89,30 @@ def runCheck(ns):
         return 1
 
     # First validate
-    args = ["precice-config-validate", str(path)]
+    args = [str(path)]
     if ns.participant:
         args.append(ns.participant)
         if ns.size:
             args.append(ns.size)
 
     try:
-        subprocess.run(args)
+        subprocess.run(["precice-config-validate"] + args)
     except subprocess.CalledProcessError as e:
         return e.returncode
     except FileNotFoundError:
-        print(
-            "precice-config-validate wasn't found, hence the validation will be skipped. This may lead to crashes in the configuration checker.",
-            file=sys.stderr,
-        )
-        print(
-            "Please install preCICE and add it to your PATH for best results.",
-            file=sys.stderr,
-        )
+        try:
+            subprocess.run(["precice-tools", "check"] + args)
+        except subprocess.CalledProcessError as e:
+            return e.returncode
+        except FileNotFoundError:
+            print(
+                "precice-config-validate and precice-tools weren't found, hence the validation will be skipped. This may lead to crashes in the configuration checker.",
+                file=sys.stderr,
+            )
+            print(
+                "Please install preCICE and add it to your PATH for best results.",
+                file=sys.stderr,
+            )
 
     # Then check
     return preciceconfigcheck.cli.runCheck(path, ns.debug)
