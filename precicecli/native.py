@@ -8,6 +8,13 @@ from importlib.metadata import version, requires
 import preciceconfigcheck.cli
 
 
+def removeToolsDeprecation(mess: str):
+    if mess.startswith("WARNING: precice-tools is deprecated"):
+        return "\n".join(mess.splitlines()[2:])
+
+    return mess
+
+
 def makeCheckParser(_):
     parser = argparse.ArgumentParser(
         add_help=False,
@@ -35,12 +42,14 @@ def makeDocParser(_):
 
 def getLibraryVersion():
     try:
-        ret = subprocess.run("precice-version", subprocess.PIPE)
-        return ret.stdout
+        ret = subprocess.run("precice-version", capture_output=True, text=True)
+        return ret.stdout.strip()
     except:
         try:
-            ret = subprocess.run(["precice-tools", "version"], subprocess.PIPE)
-            return ret.stdout
+            ret = subprocess.run(
+                ["precice-tools", "version"], capture_output=True, text=True
+            )
+            return removeToolsDeprecation(ret.stdout.strip())
         except subprocess.CalledProcessError as e:
             return str(e)
         except FileNotFoundError:
@@ -69,7 +78,14 @@ def runDoc(ns):
         return 1
     except FileNotFoundError:
         try:
-            ret = subprocess.run(["precice-tools", ns.format])
+            ret = subprocess.run(
+                ["precice-tools", ns.format], capture_output=True, text=True
+            )
+            filtered = removeToolsDeprecation(ret.stdout)
+            try:
+                print(filtered)
+            except IOError:
+                pass
         except subprocess.CalledProcessError as e:
             return 1
         except FileNotFoundError:
