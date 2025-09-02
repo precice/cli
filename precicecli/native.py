@@ -1,6 +1,7 @@
 import argparse
 import subprocess
 import pathlib
+from shutil import which
 import sys
 import re
 from importlib.metadata import version, requires
@@ -104,31 +105,34 @@ def runCheck(ns):
         print(f"The given file {path} doesn't exist.", file=sys.stderr, flush=True)
         return 1
 
-    # First validate
-    args = [str(path)]
-    if ns.participant:
-        args.append(ns.participant)
-        if ns.size:
-            args.append(ns.size)
+    args = None
+    if which("precice-config-validate") is not None:
+        args = ["precice-config-validate"]
+    elif which("precice-tools") is not None:
+        args = ["precice-tools", "check"]
 
-    try:
-        subprocess.run(["precice-config-validate"] + args)
-    except subprocess.CalledProcessError as e:
-        return e.returncode
-    except FileNotFoundError:
+    if args is None:
+        print(
+            "precice-config-validate and precice-tools weren't found, hence the validation will be skipped. This may lead to crashes in the configuration checker.\n"
+            + "Please install preCICE and add it to your PATH for best results.",
+            file=sys.stderr,
+        )
+    else:
+        # First validate
+        args.append(str(path))
+        if ns.participant:
+            args.append(ns.participant)
+            if ns.size:
+                args.append(ns.size)
+
         try:
-            subprocess.run(["precice-tools", "check"] + args)
+            subprocess.run(args)
         except subprocess.CalledProcessError as e:
+            print(
+                "Config file validation has failed.\nFurther checks will be skipped.",
+                file=sys.stderr,
+            )
             return e.returncode
-        except FileNotFoundError:
-            print(
-                "precice-config-validate and precice-tools weren't found, hence the validation will be skipped. This may lead to crashes in the configuration checker.",
-                file=sys.stderr,
-            )
-            print(
-                "Please install preCICE and add it to your PATH for best results.",
-                file=sys.stderr,
-            )
 
     # Then check
     return preciceconfigcheck.cli.runCheck(path, ns.debug)
