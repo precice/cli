@@ -41,6 +41,12 @@ def runProfiling(ns):
     }[ns.subcmd](ns)
 
 
+def runCase(ns):
+    return {
+        "init": runGenerate,
+    }[ns.subcmd](ns)
+
+
 def runConfig(ns):
     return {
         "visualize": runVisualize,
@@ -77,6 +83,17 @@ def makeParser():
     add_subparser(profiling, "histogram", makeHistogramParser)
     add_subparser(profiling, "merge", makeMergeParser)
 
+    case_help = "Tools for processing preCICE cases"
+    case_root = subparsers.add_parser(
+        "case", help=case_help, description=case_help
+    )
+    case = case_root.add_subparsers(
+        title="case commands",
+        dest="subcmd",
+    )
+
+    add_subparser(case, "init", makeGenerateParser)
+
     config_help = "Tools for processing preCICE configuration files"
     config_root = subparsers.add_parser(
         "config", help=config_help, description=config_help
@@ -102,6 +119,8 @@ def makeParser():
             return printParserHelp(profiling_root)
         if args.cmd == "config" and args.subcmd is None:
             return printParserHelp(config_root)
+        if args.cmd == "case" and args.subcmd is None:
+            return printParserHelp(case_root)
         return 0
 
     return parser, checker
@@ -111,6 +130,7 @@ def run(ns):
     return {
         "version": runVersion,
         "profiling": runProfiling,
+        "case": runCase,
         "config": runConfig,
         "init": runGenerate,
     }[ns.cmd](ns)
